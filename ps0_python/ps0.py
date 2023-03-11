@@ -56,13 +56,13 @@ center_square_region_of_red_monochrome_image = monochrome_wide_green_image_as_nd
 
 new_monochrome_wide_red_image_as_ndarray = np.copy(monochrome_wide_red_image_as_ndarray)
 new_monochrome_wide_red_image_as_ndarray[lower_border:upper_border, left_border:right_border] = center_square_region_of_red_monochrome_image
-new_monochrome_wide_red_image = Image.fromarray(new_monochrome_wide_red_image_as_ndarray)
+new_monochrome_wide_red_image = Image.fromarray(new_monochrome_wide_red_image_as_ndarray, 'L')
 new_monochrome_wide_red_image.save('output/ps0-3-a-1.png')
 
 
 #Arithmetic and geometric operations:
 max_pixel_value_of_img1_green = np.amax(monochrome_wide_green_image_as_ndarray)
-pdf.cell(100, 10, f'Max pixel value of img1 green is: {max_pixel_value_of_img1_green}', ln=True)
+pdf.cell(100, 10, f'4.a. Max pixel value of img1 green is: {max_pixel_value_of_img1_green}', ln=True)
 mean_pixel_value_of_img1_green = np.mean(monochrome_wide_green_image_as_ndarray)
 pdf.cell(100, 10, f'Mean pixel value of img1 green is: {mean_pixel_value_of_img1_green}', ln=True)
 std_value_of_img1_green = np.std(monochrome_wide_green_image_as_ndarray)
@@ -76,7 +76,17 @@ normalized_wide_green_image_as_ndarray += int(mean_pixel_value_of_img1_green)
 normalized_wide_green_image = Image.fromarray(normalized_wide_green_image_as_ndarray, 'L')
 normalized_wide_green_image.save('output/ps0-4-b-1.png')
 
+#Shifted_green_image_as_ndarray = np.copy(monochrome_wide_green_image_as_ndarray)
+shifted_green_image_as_ndarray = np.zeros((monochrome_wide_green_image_as_ndarray.shape[0], monochrome_wide_green_image_as_ndarray.shape[1]), dtype=np.uint8)
+shifted_green_image_as_ndarray[:, :-2] = monochrome_wide_green_image_as_ndarray[:, 2:]
+shifted_green_image = Image.fromarray(shifted_green_image_as_ndarray)
+shifted_green_image.save('output/ps0-4-c-1.png')
 
+#Substract shifted version of green img from the original
+substracted_image_as_ndarray = monochrome_wide_green_image_as_ndarray - shifted_green_image_as_ndarray
+substracted_image = Image.fromarray(substracted_image_as_ndarray)
+substracted_image.save('output/ps0-4-d-1.png')
+pdf.cell(100, 10, '4.d. Negative values become 0.', ln=True)
 
 #Adding images to pdf
 directory = 'output'
