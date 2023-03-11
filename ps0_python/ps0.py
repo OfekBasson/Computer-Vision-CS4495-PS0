@@ -6,8 +6,6 @@ from pdf_organizer import PDF_Organizer
 
 #Preparing PDF
 pdf = PDF_Organizer()
-pdf.add_page()
-pdf.set_font('helvetica', '', 16)
 
 #Saving wide image
 first_response = requests.get('https://img.mako.co.il/2023/03/06/ANGRY_BIBI_LEVIN_1502_re_autoOrient_x6.jpg')
@@ -78,6 +76,25 @@ pdf.save_and_add_title_and_image_to_pdf(shifted_green_image_as_ndarray, 'ps0-4-c
 substracted_image_as_ndarray = monochrome_wide_green_image_as_ndarray - shifted_green_image_as_ndarray
 pdf.save_and_add_title_and_image_to_pdf(substracted_image_as_ndarray, 'ps0-4-d-1.png', 'L', '4.d.')
 pdf.cell(100, 10, 'Negative values become 0.', ln=True)
+
+#Noise
+noise = np.random.normal(loc=0, scale=25, size=resized_wide_image_as_ndarray.shape[:2])
+
+image_green_channel_with_noise_as_ndarray = np.clip(resized_wide_image_as_ndarray[:, :, 1] + noise, 0, 255).astype(np.uint8)
+image_with_noise_on_green_channel_as_ndarray = np.copy(resized_wide_image_as_ndarray)
+image_with_noise_on_green_channel_as_ndarray[:, :, 1] = image_green_channel_with_noise_as_ndarray
+image_with_noise_on_green_channel = Image.fromarray(image_with_noise_on_green_channel_as_ndarray, 'RGB')
+pdf.save_and_add_title_and_image_to_pdf(image_with_noise_on_green_channel, 'ps0-5-a-1.png', 'RGB', '5.a.')
+pdf.cell(100, 10, "I had to use sigma=25", ln=True)
+
+image_blue_channel_with_noise_as_ndarray = np.clip(resized_wide_image_as_ndarray[:, :, 2] + noise, 0, 255).astype(np.uint8)
+image_with_noise_on_blue_channel_as_ndarray = np.copy(resized_wide_image_as_ndarray)
+image_with_noise_on_blue_channel_as_ndarray[:, :, 2] = image_blue_channel_with_noise_as_ndarray
+image_with_noise_on_blue_channel = Image.fromarray(image_with_noise_on_blue_channel_as_ndarray, 'RGB')
+pdf.save_and_add_title_and_image_to_pdf(image_with_noise_on_blue_channel, 'ps0-5-b-1.png', 'RGB', '5.b.')
+pdf.cell(150, 30, "5.c. The human eye is less sensitive to changes in the blue channel.")
+
+
 
 pdf.output('ps0_report.pdf')
 
